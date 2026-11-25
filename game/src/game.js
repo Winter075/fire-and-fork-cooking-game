@@ -19,7 +19,6 @@ export function initialState() {
     chef: { x: 470, y: 420 },
     flash: null,
     nextRush: 14,
-    shot: null,
   };
 }
 
@@ -137,49 +136,5 @@ export function update(state, dt, t) {
       state.orders[0].left = Math.min(state.orders[0].left, 18);
       flash(state, 'NEW TICKET!', false, t);
     }
-  }
-}
-
-// Fixed, real renders of the game code for the four submitted screenshots.
-export function applyShot(state, name) {
-  const fresh = initialState();
-  Object.assign(state, fresh);
-  state.phase = 'play';
-  state.shot = name;
-  if (name === 'cover') {
-    state.orders = [makeOrder(0, 26), makeOrder(1, 38), makeOrder(2, 12)];
-    state.selected = 'tomato';
-    state.board = { item: 'tomato', chops: 3, done: true };
-    state.pan = { item: 'shrimp', progress: 0.72, burnt: false };
-    state.plate = ['rice', 'tomato', 'greens'];
-    state.chef = { x: 670, y: 420 };
-    state.score = 480; state.combo = 2; state.served = 4; state.elapsed = 34;
-    state.flash = { text: 'ORDER UP!', good: true, at: 0 };
-  } else if (name === 'chop') {
-    state.orders = [makeOrder(1, 31), makeOrder(2, 44), makeOrder(3, 55)];
-    state.selected = 'mushroom';
-    state.board = { item: 'mushroom', chops: 2, done: false };
-    state.plate = ['greens'];
-    state.chef = { x: 512, y: 420 };
-    state.score = 210; state.combo = 1; state.served = 2; state.elapsed = 18;
-    state.flash = { text: 'CHOP CHOP!', good: true, at: 0 };
-  } else if (name === 'rush') {
-    state.orders = [makeOrder(2, 9), makeOrder(4, 14), makeOrder(0, 21)];
-    state.selected = 'shrimp';
-    state.board = { item: 'rice', chops: 3, done: true };
-    state.pan = { item: 'tomato', progress: 1.2, burnt: false };
-    state.plate = ['shrimp', 'greens', 'rice'];
-    state.chef = { x: 826, y: 350 };
-    state.score = 1640; state.combo = 5; state.served = 11; state.elapsed = 72;
-    state.rush = true;
-    state.flash = { text: 'SERVICE RUSH!', good: true, at: 0 };
-  } else if (name === 'serve') {
-    state.orders = [makeOrder(3, 35), makeOrder(4, 48), makeOrder(0, 60)];
-    state.selected = 'greens';
-    state.plate = ['mushroom', 'rice', 'greens'];
-    state.chef = { x: 826, y: 340 };
-    state.score = 2310; state.combo = 6; state.served = 15; state.elapsed = 96;
-    state.rush = true;
-    state.flash = { text: 'PERFECT x6!', good: true, at: 0 };
   }
 }

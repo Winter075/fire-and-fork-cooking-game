@@ -1,32 +1,34 @@
 // Boot the kitchen, wire keyboard and mouse, and draw every frame.
 import { drawKitchen, BINS, CHOP, STOVE, DISH, HATCH } from './kitchen.js';
 import { drawHud } from './hud.js';
-import { initialState, applyShot, start, pick, chop, toPan, toPlate, serve, nudgeChef, update } from './game.js';
+import { initialState, start, pick, chop, toPan, toPlate, serve, nudgeChef, update } from './game.js';
+import { toggleMute } from './audio.js';
 
 const canvas = document.getElementById('stage');
 const ctx = canvas.getContext('2d');
 const state = initialState();
-const shot = new URLSearchParams(location.search).get('shot');
-if (shot) applyShot(state, shot);
 
 const keys = {
   '1': 'tomato', '2': 'mushroom', '3': 'shrimp', '4': 'rice', '5': 'greens',
 };
 
 window.addEventListener('keydown', (e) => {
-  if (state.shot) return;
   const k = e.key.toLowerCase();
+  const t = performance.now() / 1000;
   if (keys[k]) pick(state, keys[k]);
-  else if (k === 'c') chop(state, performance.now() / 1000);
-  else if (k === 's') toPan(state, performance.now() / 1000);
-  else if (k === 'p') toPlate(state, performance.now() / 1000);
-  else if (k === 'enter') {
+  else if (k === 'c') chop(state, t);
+  else if (k === 's') toPan(state, t);
+  else if (k === 'p') toPlate(state, t);
+  else if (k === 'm') {
+    const off = toggleMute();
+    state.flash = { text: off ? 'MUTED' : 'SOUND ON', good: true, at: t };
+  } else if (k === 'enter') {
     if (state.phase === 'title' || state.phase === 'over') start(state);
-    else serve(state, performance.now() / 1000);
-  } else if (k === 'w') nudgeChef(state, 0, -1);
-  else if (k === 'a') nudgeChef(state, -1, 0);
-  else if (k === 'd') nudgeChef(state, 1, 0);
-  else if (k === 'x') nudgeChef(state, 0, 1);
+    else serve(state, t);
+  } else if (k === 'w' || k === 'arrowup') nudgeChef(state, 0, -1);
+  else if (k === 'a' || k === 'arrowleft') nudgeChef(state, -1, 0);
+  else if (k === 'd' || k === 'arrowright') nudgeChef(state, 1, 0);
+  else if (k === 'x' || k === 'arrowdown') nudgeChef(state, 0, 1);
   if (['enter', ' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) e.preventDefault();
 });
 
@@ -35,7 +37,6 @@ function inside(p, b) {
 }
 
 canvas.addEventListener('click', (e) => {
-  if (state.shot) return;
   const r = canvas.getBoundingClientRect();
   const p = {
     x: (e.clientX - r.left) * canvas.width / r.width,
@@ -57,7 +58,6 @@ function frame(now) {
   last = now;
   const t = now / 1000;
   update(state, dt, t);
-  if (state.shot && state.flash) state.flash.at = t;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawKitchen(ctx, state, t);
   drawHud(ctx, state, t);

@@ -1,5 +1,11 @@
 // Small synthesized kitchen sounds. No audio files, no network: just the WebAudio API.
 let context = null;
+let muted = false;
+
+export function toggleMute() {
+  muted = !muted;
+  return muted;
+}
 
 function ac() {
   if (!context) {
@@ -11,6 +17,7 @@ function ac() {
 }
 
 function tone(freq, ms, type = 'sine', volume = 0.08, slide = 0) {
+  if (muted) return;
   const c = ac();
   if (!c) return;
   const o = c.createOscillator();

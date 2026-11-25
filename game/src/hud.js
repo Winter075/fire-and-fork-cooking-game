@@ -49,7 +49,7 @@ export function drawHud(ctx, state, t) {
   label(ctx, state.rush ? 'SERVICE RUSH!' : 'WARMING UP', BOARD.x + BOARD.w / 2, BOARD.y + BOARD.h - 20, 18, state.rush ? C.hot : C.good, 'center');
 
   ctx.fillStyle = 'rgba(12,15,28,0.82)'; ctx.fillRect(0, 692, 1280, 28);
-  label(ctx, '1-5 pick ingredient   C chop   S pan   P plate   ENTER serve   WASD move chef   M mute', 20, 706, 15, '#c7d0e2');
+  label(ctx, '1-5 pick ingredient   C chop   S pan   P plate   ENTER serve   WASD/arrows move chef   M mute', 20, 706, 15, '#c7d0e2');
 
   if (state.phase === 'title') {
     ctx.fillStyle = 'rgba(12,15,28,0.72)'; ctx.fillRect(0, 0, 1280, 720);
